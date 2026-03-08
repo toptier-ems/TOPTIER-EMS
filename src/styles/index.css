@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  #root {
+    min-height: 100vh;
+  }
+  input:focus, textarea:focus, button:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-offset-white ring-[#FE5A1D]/40;
+  }
+  .btn-primary {
+    @apply bg-[#FE5A1D] hover:bg-[#E54E0A] text-white font-medium transition;
+  }
+}
