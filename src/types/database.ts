@@ -25,7 +25,18 @@ export interface Profile {
   deleted_at?: string | null;
   presence_status?: PresenceStatus | null;
   employee_badge?: EmployeeBadge | null;
+  department?: Department | null;
+  birth_date?: string | null;
 }
+
+export type Department = 'executive' | 'admin' | 'it' | 'esl';
+
+export const DEPARTMENT_LABELS: Record<Department, string> = {
+  executive: 'Executive',
+  admin: 'Admin',
+  it: 'IT',
+  esl: 'ESL',
+};
 
 export type PresenceStatus = 'present' | 'absent' | 'on_leave' | 'rest_day';
 
@@ -252,3 +263,90 @@ export const APPLICANT_STATUS_LABELS: Record<ApplicantStatus, string> = {
   training: 'Training',
   final_interview: 'Final Interview',
 };
+
+// ——— Clients IT Department (task management, visible only to IT department) ———
+
+export type ITTaskStatus = 'todo' | 'in_progress' | 'review' | 'completed';
+export type ITTaskPriority = 'low' | 'normal' | 'high' | 'urgent';
+
+export const IT_TASK_STATUS_LABELS: Record<ITTaskStatus, string> = {
+  todo: 'To Do',
+  in_progress: 'In Progress',
+  review: 'Review',
+  completed: 'Completed',
+};
+
+export const IT_TASK_PRIORITY_LABELS: Record<ITTaskPriority, string> = {
+  low: 'Low',
+  normal: 'Normal',
+  high: 'High',
+  urgent: 'Urgent',
+};
+
+export interface ITDepartmentClient {
+  id: string;
+  name: string;
+  contact: string | null;
+  company: string | null;
+  contract_url: string | null;
+  objectives_target: number | null;
+  objectives_done: number | null;
+  due_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ITDepartmentTask {
+  id: string;
+  title: string;
+  description: string | null;
+  status: ITTaskStatus;
+  priority: ITTaskPriority | null;
+  due_date: string | null;
+  client_id: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ITDepartmentTaskWithDetails extends ITDepartmentTask {
+  assignees?: Pick<Profile, 'id' | 'full_name' | 'avatar_url'>[];
+  client?: ITDepartmentClient | null;
+  subtasks?: ITDepartmentSubtask[];
+  subtask_count?: number;
+}
+
+export interface ITDepartmentTaskAssignee {
+  task_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+export interface ITDepartmentSubtask {
+  id: string;
+  task_id: string;
+  title: string;
+  status: 'open' | 'completed';
+  assignee_id: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ITDepartmentActivity {
+  id: string;
+  task_id: string;
+  user_id: string;
+  action_type: string;
+  details: string | null;
+  created_at: string;
+}
+
+export interface ITDepartmentComment {
+  id: string;
+  task_id: string;
+  user_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+}

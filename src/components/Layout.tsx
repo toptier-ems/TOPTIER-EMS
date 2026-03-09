@@ -18,6 +18,8 @@ import {
   UsersRound,
   Briefcase,
   ClipboardList,
+  Monitor,
+  CalendarRange,
 } from 'lucide-react';
 
 const LOGO_SRC = '/logo.png';
@@ -31,16 +33,22 @@ const NAV_ALL = [
   { to: '/employees', label: 'Total Employees', icon: UsersRound, roles: ['ceo', 'executive', 'hr'] as AppRole[] },
   { to: '/recruitment', label: 'Recruitment', icon: Briefcase, roles: ['ceo', 'executive', 'manager', 'trainer', 'supervisor', 'hr'] as AppRole[] },
   { to: '/leave/requests', label: 'Leave Requests', icon: FileText, roles: ['ceo', 'executive', 'hr', 'manager', 'supervisor', 'tl', 'trainer'] as AppRole[] },
+  { to: '/team-calendar', label: 'Team Calendar', icon: CalendarRange, roles: ['ceo', 'executive', 'hr', 'manager', 'supervisor', 'tl'] as AppRole[] },
   { to: '/employee-approval', label: 'Employee Approval', icon: UserCheck, roles: ['ceo', 'hr', 'supervisor'] as AppRole[] },
   { to: '/leave/allocation', label: 'Leave Allocation', icon: PieChart, roles: ['ceo', 'hr'] as AppRole[] },
   { to: '/action-log', label: 'Action Log', icon: ClipboardList, roles: ['ceo', 'executive'] as AppRole[] },
+  { to: '/clients-it-department', label: 'Clients IT Department', icon: Monitor, department: 'it' as const },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { profile } = useAuth();
   const location = useLocation();
 
-  const nav = NAV_ALL.filter((item) => !item.roles || (profile && item.roles.includes(profile.position)));
+  const nav = NAV_ALL.filter((item) => {
+    if (item.department) return profile?.department === item.department || profile?.department === 'executive' || profile?.position === 'executive';
+    if (!item.roles) return true;
+    return profile && item.roles.includes(profile.position);
+  });
 
   return (
     <div className="min-h-screen flex bg-gray-50">

@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const [bloodType, setBloodType] = useState('');
   const [bio, setBio] = useState('');
   const [address, setAddress] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [saving, setSaving] = useState(false);
   const [allocation, setAllocation] = useState<LeaveAllocation | null>(null);
   const [approvedRequests, setApprovedRequests] = useState<LeaveRequest[]>([]);
@@ -39,6 +40,7 @@ export default function SettingsPage() {
     setBloodType(profile?.blood_type ?? '');
     setBio(profile?.bio ?? '');
     setAddress(profile?.address ?? '');
+    setBirthDate(profile?.birth_date ?? '');
   }, [profile]);
 
   useEffect(() => {
@@ -94,6 +96,7 @@ export default function SettingsPage() {
           blood_type: bloodType || null,
           bio: bio.trim() || null,
           address: address.trim() || null,
+          birth_date: birthDate || null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
@@ -176,6 +179,17 @@ export default function SettingsPage() {
             placeholder="Full address"
             className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-toptier-primary focus:border-toptier-primary"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Birth date</label>
+          <input
+            type="date"
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:ring-2 focus:ring-toptier-primary focus:border-toptier-primary"
+          />
+          <p className="text-xs text-gray-500 mt-0.5">Used for birthdays on Team Calendar (optional).</p>
         </div>
 
         <div>

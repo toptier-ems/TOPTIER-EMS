@@ -1,14 +1,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { POSITION_LABELS, PRESENCE_STATUS_LABELS, EMPLOYEE_BADGE_LABELS } from '../types/database';
-import type { AppRole, PresenceStatus, EmployeeBadge } from '../types/database';
+import { POSITION_LABELS, PRESENCE_STATUS_LABELS, EMPLOYEE_BADGE_LABELS, DEPARTMENT_LABELS } from '../types/database';
+import type { AppRole, PresenceStatus, EmployeeBadge, Department } from '../types/database';
 import type { Profile } from '../types/database';
 import { Search, Trash2, Users, UserCheck, UserX, Plane, Calendar } from 'lucide-react';
 import { format, isWithinInterval, parseISO } from 'date-fns';
 
 const ALLOWED_ROLES: AppRole[] = ['ceo', 'executive', 'hr'];
 const BADGE_OPTIONS: EmployeeBadge[] = ['best_employee', 'best_teacher', 'rising_star', 'no_absences', 'no_lates', 'most_improved'];
+const DEPARTMENT_OPTIONS: Department[] = ['executive', 'admin', 'it', 'esl'];
 
 function getPositionLabel(position: string | undefined): string {
   if (!position) return '—';
@@ -42,6 +43,7 @@ export default function TotalEmployeesPage() {
 
   const canAccess = profile && ALLOWED_ROLES.includes(profile.position as AppRole);
   const canAssignBadge = profile && (profile.position === 'ceo' || profile.position === 'hr');
+  const canAssignDepartment = canAccess; // CEO, Executive, HR assign department
 
   useEffect(() => {
     if (!canAccess) return;
@@ -83,7 +85,8 @@ export default function TotalEmployeesPage() {
         (e.email && e.email.toLowerCase().includes(q)) ||
         (e.contact_number && e.contact_number.includes(q)) ||
         (e.address && e.address.toLowerCase().includes(q)) ||
-        getPositionLabel(e.position).toLowerCase().includes(q)
+        getPositionLabel(e.position).toLowerCase().includes(q) ||
+        (e.department && DEPARTMENT_LABELS[e.department as Department]?.toLowerCase().includes(q))
     );
   }, [employees, search]);
 
@@ -207,7 +210,7 @@ export default function TotalEmployeesPage() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, email, contact, address, position..."
+            placeholder="Search by name, email, contact, address, position, department..."
             className="w-full pl-10 pr-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-toptier-primary focus:border-toptier-primary"
           />
         </div>
@@ -227,6 +230,7 @@ export default function TotalEmployeesPage() {
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th className="py-3 px-4 font-semibold text-gray-900">Name</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Position</th>
+                  <th className="py-3 px-4 font-semibold text-gray-900">Department</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Title</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Status</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Contact Number</th>
@@ -241,6 +245,26 @@ export default function TotalEmployeesPage() {
                   <tr key={emp.id} className="border-b border-gray-100 hover:bg-gray-50/50">
                     <td className="py-3 px-4 font-medium text-gray-900">{emp.full_name}</td>
                     <td className="py-3 px-4 text-gray-700">{getPositionLabel(emp.position)}</td>
+                    <td className="py-3 px-4">
+                      {canAssignDepartment ? (
+                        <select
+                          value={emp.department ?? ''}
+                          onChange={async (e) => {
+                            const val = e.target.value as Department | '';
+                            await supabase.from('profiles').update({ department: val || null, updated_at: new Date().toISOString() }).eq('id', emp.id);
+                            setEmployees((prev) => prev.map((p) => (p.id === emp.id ? { ...p, department: val || undefined } : p)));
+                          }}
+                          className="text-sm rounded border border-gray-200 text-gray-900 bg-white py-1 px-2"
+                        >
+                          <option value="">—</option>
+                          {DEPARTMENT_OPTIONS.map((d) => (
+                            <option key={d} value={d}>{DEPARTMENT_LABELS[d]}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span className="text-gray-700 text-sm">{emp.department ? DEPARTMENT_LABELS[emp.department as Department] : '—'}</span>
+                      )}
+                    </td>
                     <td className="py-3 px-4">
                       {canAssignBadge ? (
                         <select

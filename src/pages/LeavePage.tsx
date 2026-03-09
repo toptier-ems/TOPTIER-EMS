@@ -5,8 +5,8 @@ import { LEAVE_TYPE_LABELS } from '../types/database';
 import type { LeaveType } from '../types/database';
 import type { LeaveAllocation, LeaveRequest } from '../types/database';
 import { logAction } from '../lib/actionLog';
-import { Calendar, Info, X } from 'lucide-react';
-import { differenceInCalendarDays } from 'date-fns';
+import { Calendar, Info, X, Clock, CheckCircle, XCircle, FileText } from 'lucide-react';
+import { differenceInCalendarDays, format, parseISO } from 'date-fns';
 
 const TYPES: LeaveType[] = ['emergency', 'vacation', 'sick'];
 const currentYear = new Date().getFullYear();
@@ -30,17 +30,20 @@ export default function LeavePage() {
   const [showNoCreditModal, setShowNoCreditModal] = useState(false);
   const [noCreditType, setNoCreditType] = useState<LeaveType | null>(null);
   const [balanceLoaded, setBalanceLoaded] = useState(false);
+  const [myRequests, setMyRequests] = useState<LeaveRequest[]>([]);
 
   useEffect(() => {
     if (!user?.id) return;
     (async () => {
-      const [allocRes, reqRes] = await Promise.all([
+      const [allocRes, reqRes, allReqRes] = await Promise.all([
         supabase.from('leave_allocations').select('*').eq('user_id', user.id).eq('year', currentYear).maybeSingle(),
         supabase.from('leave_requests').select('*').eq('user_id', user.id).eq('status', 'approved'),
+        supabase.from('leave_requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
       ]);
       setAllocation((allocRes.data as LeaveAllocation) ?? null);
       const list = (reqRes.data ?? []).filter((r: LeaveRequest) => new Date(r.start_date).getFullYear() === currentYear) as LeaveRequest[];
       setApprovedRequests(list);
+      setMyRequests((allReqRes.data ?? []) as LeaveRequest[]);
       setBalanceLoaded(true);
     })();
   }, [user?.id]);
@@ -116,6 +119,8 @@ export default function LeavePage() {
       setStartDate('');
       setEndDate('');
       setReason('');
+      const { data: allReq } = await supabase.from('leave_requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+      setMyRequests((allReq ?? []) as LeaveRequest[]);
     } catch (err: unknown) {
       setMessage(err instanceof Error ? err.message : 'Failed to submit');
     } finally {
@@ -192,8 +197,78 @@ export default function LeavePage() {
         </button>
       </form>
       <p className="mt-4 text-gray-500 text-sm">
-        Approval is done by Team Lead, Supervisor, HR, or CEO. Check &quot;Leave Requests&quot; for status.
+        Approval is done by Team Lead, Supervisor, HR, or CEO.
       </p>
+
+      {/* Request status section */}
+      <section className="mt-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <FileText className="w-5 h-5 text-toptier-primary" />
+          My leave request status
+        </h2>
+        {myRequests.length === 0 ? (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-card p-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gray-100 text-gray-400 mb-3">
+              <Calendar className="w-7 h-7" />
+            </div>
+            <p className="text-gray-600 font-medium">No leave requests yet</p>
+            <p className="text-gray-500 text-sm mt-1">Submit a request above to see its status here.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {myRequests.map((req) => {
+              const isPending = req.status === 'pending';
+              const isApproved = req.status === 'approved';
+              const isRejected = req.status === 'rejected';
+              const statusConfig = isPending
+                ? { label: 'Pending', icon: Clock, bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-800', iconColor: 'text-amber-600' }
+                : isApproved
+                  ? { label: 'Approved', icon: CheckCircle, bg: 'bg-green-50', border: 'border-green-200', badge: 'bg-green-100 text-green-800', iconColor: 'text-green-600' }
+                  : { label: 'Rejected', icon: XCircle, bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-800', iconColor: 'text-red-600' };
+              const StatusIcon = statusConfig.icon;
+              const days = differenceInCalendarDays(parseISO(req.end_date), parseISO(req.start_date)) + 1;
+              return (
+                <div
+                  key={req.id}
+                  className={`rounded-xl border shadow-card overflow-hidden transition hover:shadow-md ${statusConfig.bg} ${statusConfig.border}`}
+                >
+                  <div className="p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-gray-900">{LEAVE_TYPE_LABELS[req.leave_type]}</span>
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${statusConfig.badge}`}>
+                            <StatusIcon className="w-3.5 h-3.5" />
+                            {statusConfig.label}
+                          </span>
+                        </div>
+                        <p className="mt-1.5 text-sm text-gray-600">
+                          {format(parseISO(req.start_date), 'MMM d, yyyy')} → {format(parseISO(req.end_date), 'MMM d, yyyy')}
+                          <span className="text-gray-500 ml-1">({days} day{days !== 1 ? 's' : ''})</span>
+                        </p>
+                        {req.reason && (
+                          <p className="mt-2 text-sm text-gray-500 line-clamp-2">&quot;{req.reason}&quot;</p>
+                        )}
+                        {req.responded_at && !isPending && (
+                          <p className="mt-2 text-xs text-gray-500">
+                            {isApproved ? 'Approved' : 'Rejected'} on {format(parseISO(req.responded_at), 'MMM d, yyyy \'at\' h:mm a')}
+                          </p>
+                        )}
+                      </div>
+                      <div className={`flex items-center justify-center w-12 h-12 rounded-xl ${statusConfig.badge} ${statusConfig.iconColor} flex-shrink-0`}>
+                        <StatusIcon className="w-6 h-6" />
+                      </div>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-gray-200/60 flex items-center justify-between text-xs text-gray-500">
+                      <span>Submitted {format(parseISO(req.created_at), 'MMM d, yyyy')}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
       {/* No credit info modal */}
       {showNoCreditModal && noCreditType && (

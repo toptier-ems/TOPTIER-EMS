@@ -16,6 +16,8 @@ import SettingsPage from './pages/SettingsPage';
 import TotalEmployeesPage from './pages/TotalEmployeesPage';
 import RecruitmentPage from './pages/RecruitmentPage';
 import ActionLogPage from './pages/ActionLogPage';
+import ClientsITDepartmentPage from './pages/ClientsITDepartmentPage';
+import TeamCalendarPage from './pages/TeamCalendarPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, profile, loading } = useAuth();
@@ -166,6 +168,26 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <ActionLogPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/clients-it-department"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ClientsITDepartmentPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/team-calendar"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <TeamCalendarPage />
             </Layout>
           </ProtectedRoute>
         }
