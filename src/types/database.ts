@@ -145,6 +145,57 @@ export interface Accomplishment {
   is_current_role?: boolean;
   start_date?: string | null;
   end_date?: string | null;
+  source_type?: string | null;
+  pd_event_id?: string | null;
+  pd_response_id?: string | null;
+}
+
+export type PdEventCategory = 'seminar' | 'training' | 'accreditation';
+export type PdResponseStatus = 'interested' | 'not_attending' | 'completed';
+
+export const PD_EVENT_CATEGORY_LABELS: Record<PdEventCategory, string> = {
+  seminar: 'Seminar',
+  training: 'Training',
+  accreditation: 'Accreditation',
+};
+
+export const PD_RESPONSE_STATUS_LABELS: Record<PdResponseStatus, string> = {
+  interested: 'Attending',
+  not_attending: 'Not attending',
+  completed: 'Completed',
+};
+
+export interface PdEvent {
+  id: string;
+  created_by: string;
+  title: string;
+  description: string | null;
+  duration: string | null;
+  category: PdEventCategory;
+  scheduled_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PdResponse {
+  id: string;
+  event_id: string;
+  user_id: string;
+  status: PdResponseStatus;
+  responded_at: string | null;
+  marked_completed_at: string | null;
+  marked_completed_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PdCertificate {
+  id: string;
+  accomplishment_id: string;
+  certificate_number: string;
+  issued_by: string;
+  issued_at: string;
+  created_at: string;
 }
 
 export const EMPLOYMENT_TYPES = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance', 'Self-employed', 'Volunteer'] as const;

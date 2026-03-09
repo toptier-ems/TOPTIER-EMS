@@ -20,6 +20,7 @@ import {
   ClipboardList,
   Monitor,
   CalendarRange,
+  Award,
 } from 'lucide-react';
 
 const LOGO_SRC = '/logo.png';
@@ -29,6 +30,7 @@ const NAV_ALL = [
   { to: '/feed', label: 'Feed', icon: MessageCircle },
   { to: '/profile', label: 'My Profile', icon: Users },
   { to: '/leave', label: 'Leave', icon: Calendar },
+  { to: '/professional-development', label: 'Professional Development', icon: Award },
   { to: '/meetings', label: 'My Meetings', icon: CalendarDays },
   { to: '/employees', label: 'Total Employees', icon: UsersRound, roles: ['ceo', 'executive', 'hr'] as AppRole[] },
   { to: '/recruitment', label: 'Recruitment', icon: Briefcase, roles: ['ceo', 'executive', 'manager', 'trainer', 'supervisor', 'hr'] as AppRole[] },

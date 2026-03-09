@@ -88,7 +88,7 @@ export default function NotificationBell() {
               {list.map((n) => (
                 <li key={n.id}>
                   <Link
-                    to={n.reference_id ? `/feed?post=${n.reference_id}` : '/feed'}
+                    to={n.type === 'pd_event' ? (n.reference_id ? `/professional-development?event=${n.reference_id}` : '/professional-development') : (n.reference_id ? `/feed?post=${n.reference_id}` : '/feed')}
                     onClick={() => {
                       if (!n.read_at) markRead(n.id);
                       setOpen(false);

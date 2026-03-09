@@ -42,6 +42,15 @@ git init
 git add .
 ```
 
+If Git says **“Author identity unknown”**, set your name and email once (use the email linked to your GitHub account):
+
+```powershell
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+```
+
+Then commit:
+
 ```powershell
 git commit -m "Initial commit: Top Tier EMS"
 ```

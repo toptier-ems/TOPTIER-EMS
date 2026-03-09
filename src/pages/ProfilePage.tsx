@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { POSITION_LABELS, EMPLOYEE_BADGE_LABELS } from '../types/database';
@@ -7,7 +7,7 @@ import type { EmployeeBadge } from '../types/database';
 import type { Accomplishment, Profile, Skill, Interest } from '../types/database';
 import { EMPLOYMENT_TYPES, MONTHS } from '../types/database';
 import ProfilePDF from '../components/ProfilePDF';
-import { Plus, Trash2, X, Info } from 'lucide-react';
+import { Plus, Trash2, X, Info, Award } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 
 const currentYear = new Date().getFullYear();
@@ -31,6 +31,8 @@ export default function ProfilePage() {
   const [viewSkills, setViewSkills] = useState<Skill[]>([]);
   const [viewInterests, setViewInterests] = useState<Interest[]>([]);
   const [accomplishments, setAccomplishments] = useState<Accomplishment[]>([]);
+  const [certByAccId, setCertByAccId] = useState<Record<string, string>>({});
+  const [viewCertByAccId, setViewCertByAccId] = useState<Record<string, string>>({});
   const [skills, setSkills] = useState<Skill[]>([]);
   const [interests, setInterests] = useState<Interest[]>([]);
   const [newSkill, setNewSkill] = useState('');
@@ -62,10 +64,18 @@ export default function ProfilePage() {
           supabase.from('skills').select('*').eq('user_id', paramUserId),
           supabase.from('interests').select('*').eq('user_id', paramUserId),
         ]);
+        const accList = (accRes.data as Accomplishment[]) ?? [];
         setViewProfile(profRes.data as Profile | null);
-        setViewAccomplishments((accRes.data as Accomplishment[]) ?? []);
+        setViewAccomplishments(accList);
         setViewSkills((skillRes.data as Skill[]) ?? []);
         setViewInterests((intRes.data as Interest[]) ?? []);
+        const pdAccIds = accList.filter((a) => a.source_type === 'pd').map((a) => a.id);
+        if (pdAccIds.length) {
+          const { data: certs } = await supabase.from('pd_certificates').select('id, accomplishment_id').in('accomplishment_id', pdAccIds);
+          const map: Record<string, string> = {};
+          (certs ?? []).forEach((c: { id: string; accomplishment_id: string }) => { map[c.accomplishment_id] = c.id; });
+          setViewCertByAccId(map);
+        } else setViewCertByAccId({});
       })();
       return;
     }
@@ -73,6 +83,7 @@ export default function ProfilePage() {
     setViewAccomplishments([]);
     setViewSkills([]);
     setViewInterests([]);
+    setViewCertByAccId({});
   }, [paramUserId, user?.id]);
 
   useEffect(() => {
@@ -83,9 +94,17 @@ export default function ProfilePage() {
         supabase.from('skills').select('*').eq('user_id', user.id),
         supabase.from('interests').select('*').eq('user_id', user.id),
       ]);
-      setAccomplishments((accRes.data as Accomplishment[]) ?? []);
+      const accList = (accRes.data as Accomplishment[]) ?? [];
+      setAccomplishments(accList);
       setSkills((skillRes.data as Skill[]) ?? []);
       setInterests((intRes.data as Interest[]) ?? []);
+      const pdAccIds = accList.filter((a) => a.source_type === 'pd').map((a) => a.id);
+      if (pdAccIds.length) {
+        const { data: certs } = await supabase.from('pd_certificates').select('id, accomplishment_id').in('accomplishment_id', pdAccIds);
+        const map: Record<string, string> = {};
+        (certs ?? []).forEach((c: { id: string; accomplishment_id: string }) => { map[c.accomplishment_id] = c.id; });
+        setCertByAccId(map);
+      } else setCertByAccId({});
     })();
     setLoading(false);
   }, [user?.id, isOwnProfile]);
@@ -251,6 +270,11 @@ export default function ProfilePage() {
                     {formatExperienceDates(a)}
                     {a.location ? ` · ${a.location}` : ''}
                   </p>
+                  {a.source_type === 'pd' && viewCertByAccId[a.id] && (
+                    <Link to={`/certificate/${viewCertByAccId[a.id]}`} className="inline-flex items-center gap-1 mt-2 text-sm text-toptier-primary hover:underline">
+                      <Award className="w-4 h-4" /> View certificate
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -504,14 +528,21 @@ export default function ProfilePage() {
                     {formatExperienceDates(a)}
                     {a.location ? ` · ${a.location}` : ''}
                   </p>
+                  {a.source_type === 'pd' && certByAccId[a.id] && (
+                    <Link to={`/certificate/${certByAccId[a.id]}`} className="inline-flex items-center gap-1 mt-2 text-sm text-toptier-primary hover:underline">
+                      <Award className="w-4 h-4" /> View certificate
+                    </Link>
+                  )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => deleteAccomplishment(a.id)}
-                  className="p-1.5 rounded text-toptier-muted hover:text-red-400 hover:bg-red-500/10"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                {a.source_type !== 'pd' && (
+                  <button
+                    type="button"
+                    onClick={() => deleteAccomplishment(a.id)}
+                    className="p-1.5 rounded text-toptier-muted hover:text-red-400 hover:bg-red-500/10"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
               </li>
             ))}
           </ul>

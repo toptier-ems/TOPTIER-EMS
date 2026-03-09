@@ -18,6 +18,8 @@ import RecruitmentPage from './pages/RecruitmentPage';
 import ActionLogPage from './pages/ActionLogPage';
 import ClientsITDepartmentPage from './pages/ClientsITDepartmentPage';
 import TeamCalendarPage from './pages/TeamCalendarPage';
+import ProfessionalDevelopmentPage from './pages/ProfessionalDevelopmentPage';
+import CertificatePage from './pages/CertificatePage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, profile, loading } = useAuth();
@@ -189,6 +191,24 @@ function AppRoutes() {
             <Layout>
               <TeamCalendarPage />
             </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/professional-development"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ProfessionalDevelopmentPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/certificate/:id"
+        element={
+          <ProtectedRoute>
+            <CertificatePage />
           </ProtectedRoute>
         }
       />
