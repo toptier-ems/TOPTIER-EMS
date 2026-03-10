@@ -170,8 +170,6 @@ function useExecutiveDashboard(selectedDate: Date) {
         const days: DaySummary[] = [];
         for (let i = 6; i >= 0; i--) {
           const d = subDays(selectedDate, i);
-          const ds = startOfDay(d).toISOString();
-          const de = endOfDay(d).toISOString();
           days.push({
             date: format(d, 'yyyy-MM-dd'),
             label: format(d, 'EEE d'),
@@ -252,7 +250,7 @@ function generateDailyReport(date: Date, data: DailyData): string {
 }
 
 function ExecutiveDashboard() {
-  const { profile } = useAuth();
+  useAuth();
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const reportRef = useRef<HTMLDivElement>(null);
   const { loading, chartData, dailyData } = useExecutiveDashboard(selectedDate);
@@ -371,7 +369,6 @@ function ExecutiveDashboard() {
                     <YAxis tick={{ fontSize: 12 }} stroke="#6b7280" allowDecimals={false} />
                     <Tooltip
                       contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: 8 }}
-                      formatter={(value: number) => [value, '']}
                       labelFormatter={(label) => `Day: ${label}`}
                     />
                     <Legend />

@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { PRESENCE_STATUS_LABELS } from '../types/database';
 import type { PresenceStatus } from '../types/database';
-import type { ProfileRestDay, ProfilePlannedLeave } from '../types/database';
+import type { ProfilePlannedLeave } from '../types/database';
 import type { LeaveRequest } from '../types/database';
 import { UserCheck, UserX, Plane, Calendar, CalendarPlus, X } from 'lucide-react';
 import { format, isWithinInterval, parseISO } from 'date-fns';
@@ -25,7 +25,6 @@ function useEffectiveStatus(userId: string | undefined, profile: { presence_stat
 
   useEffect(() => {
     if (!userId) return;
-    const todayStr = today();
     (async () => {
       const [restRes, plannedRes, leaveRes] = await Promise.all([
         supabase.from('profile_rest_days').select('rest_date').eq('user_id', userId),

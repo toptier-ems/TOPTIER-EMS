@@ -31,7 +31,6 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  Upload,
   FileText,
   Pencil,
   Target,
@@ -394,23 +393,6 @@ export default function ClientsITDepartmentPage() {
     } finally {
       setSaving(false);
     }
-  };
-
-  const updateTaskStatus = async (taskId: string, status: ITTaskStatus) => {
-    const task = tasks.find((t) => t.id === taskId);
-    const oldStatus = task?.status;
-    await supabase
-      .from('it_department_tasks')
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', taskId);
-    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status } : t)));
-    if (user?.id && oldStatus)
-      await supabase.from('it_department_activity').insert({
-        task_id: taskId,
-        user_id: user.id,
-        action_type: 'status_change',
-        details: `Changed status from ${IT_TASK_STATUS_LABELS[oldStatus]} to ${IT_TASK_STATUS_LABELS[status]}`,
-      });
   };
 
   if (!canAccess) {
@@ -904,7 +886,6 @@ export default function ClientsITDepartmentPage() {
         <TaskDetailPanel
           taskId={selectedTaskId}
           task={tasks.find((t) => t.id === selectedTaskId)}
-          itMembers={itMembers}
           onClose={() => setSelectedTaskId(null)}
           onUpdate={(updated) => setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))}
           onRemove={() => {
@@ -1073,14 +1054,12 @@ function CreateTaskModal({
 function TaskDetailPanel({
   taskId,
   task,
-  itMembers,
   onClose,
   onUpdate,
   onRemove,
 }: {
   taskId: string;
   task: ITDepartmentTaskWithDetails | undefined;
-  itMembers: Profile[];
   onClose: () => void;
   onUpdate: (t: ITDepartmentTaskWithDetails) => void;
   onRemove: () => void;

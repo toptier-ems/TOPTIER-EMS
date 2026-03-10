@@ -8,7 +8,6 @@ import { logAction } from '../lib/actionLog';
 import { Calendar, Info, X, Clock, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { differenceInCalendarDays, format, parseISO } from 'date-fns';
 
-const TYPES: LeaveType[] = ['emergency', 'vacation', 'sick'];
 const currentYear = new Date().getFullYear();
 
 function leaveDaysUsed(requests: LeaveRequest[], type: LeaveType): number {
@@ -50,7 +49,6 @@ export default function LeavePage() {
 
   const remainingVacation = allocation ? Math.max(0, allocation.vacation_days - leaveDaysUsed(approvedRequests, 'vacation')) : 0;
   const remainingSick = allocation ? Math.max(0, allocation.sick_days - leaveDaysUsed(approvedRequests, 'sick')) : 0;
-  const remainingEmergency = allocation ? Math.max(0, allocation.emergency_days - leaveDaysUsed(approvedRequests, 'emergency')) : 0;
 
   const canUseVacation = remainingVacation > 0;
   const canUseSick = remainingSick > 0;
@@ -219,7 +217,6 @@ export default function LeavePage() {
             {myRequests.map((req) => {
               const isPending = req.status === 'pending';
               const isApproved = req.status === 'approved';
-              const isRejected = req.status === 'rejected';
               const statusConfig = isPending
                 ? { label: 'Pending', icon: Clock, bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-800', iconColor: 'text-amber-600' }
                 : isApproved

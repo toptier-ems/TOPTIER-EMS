@@ -13,7 +13,6 @@ import {
   format,
   parseISO,
   isSameMonth,
-  isSameDay,
   isToday,
   addDays,
   getMonth,

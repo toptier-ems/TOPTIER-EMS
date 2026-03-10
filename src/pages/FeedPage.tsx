@@ -796,7 +796,7 @@ function FeedComments({
   onSubmit: () => void;
   currentUserId?: string;
 }) {
-  const [comments, setComments] = useState<{ id: string; body: string; user_id: string; created_at: string; profiles: { full_name: string; avatar_url: string | null; position?: string; feed_points?: number } | null }[]>([]);
+  const [comments, setComments] = useState<{ id: string; body: string; user_id: string; created_at: string; profiles: { full_name: string; avatar_url: string | null; position?: string; feed_points?: number; employee_badge?: string } | null }[]>([]);
   const [mentionOptions, setMentionOptions] = useState<{ type: 'everyone' | 'position' | 'user'; id?: string; label: string }[]>([]);
   const [mentionIndex, setMentionIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
