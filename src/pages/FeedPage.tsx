@@ -109,6 +109,7 @@ export default function FeedPage() {
   const [shorts, setShorts] = useState<FeedShortWithAuthor[]>([]);
   const [uploadingShort, setUploadingShort] = useState(false);
   const [viewerShort, setViewerShort] = useState<FeedShortWithAuthor | null>(null);
+  const [deletingShortId, setDeletingShortId] = useState<string | null>(null);
   const [shortReactionCounts, setShortReactionCounts] = useState<Record<string, Record<ShortReactionType, number>>>({});
   const [myShortReaction, setMyShortReaction] = useState<Record<string, ShortReactionType | null>>({});
   const shortInputRef = useRef<HTMLInputElement>(null);
@@ -126,6 +127,22 @@ export default function FeedPage() {
     try {
       await supabase.rpc('cleanup_old_feed_shorts');
     } catch (_) { /* ignore */ }
+  };
+
+  const deleteMyShort = async (shortId: string) => {
+    if (!user?.id || !confirm('Delete this short? This cannot be undone.')) return;
+    setDeletingShortId(shortId);
+    try {
+      const { error } = await supabase.from('feed_shorts').delete().eq('id', shortId).eq('user_id', user.id);
+      if (error) throw error;
+      setShorts((prev) => prev.filter((s) => s.id !== shortId));
+      if (viewerShort?.id === shortId) setViewerShort(null);
+    } catch (err) {
+      console.error(err);
+      alert(err instanceof Error ? err.message : 'Failed to delete short.');
+    } finally {
+      setDeletingShortId(null);
+    }
   };
 
   const fetchPosts = async () => {
@@ -393,8 +410,8 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Feed</h1>
+    <div className="max-w-2xl mx-auto px-0 sm:px-0 min-w-0">
+      <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">Feed</h1>
 
       {/* Shorts (My Day style) - 24h only, max 50MB */}
       <div className="mb-6">
@@ -613,9 +630,9 @@ export default function FeedPage() {
 
       {/* CEO delete post confirmation modal */}
       {deletePostId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setDeletePostId(null)}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60" onClick={() => setDeletePostId(null)}>
           <div
-            className="bg-white border border-gray-200 rounded-xl shadow-xl max-w-md w-full p-6"
+            className="bg-white border border-gray-200 w-full sm:max-w-md max-h-[85dvh] overflow-y-auto rounded-t-2xl sm:rounded-xl shadow-xl p-4 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -647,34 +664,63 @@ export default function FeedPage() {
         </div>
       )}
 
-      {/* Short video viewer modal */}
+      {/* Short video viewer modal - responsive: uses most of viewport on any device */}
       {viewerShort && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" onClick={() => setViewerShort(null)}>
-          <div className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-2">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-3 sm:p-4 md:p-6"
+          onClick={() => setViewerShort(null)}
+        >
+          <div
+            className="flex flex-col max-h-[95dvh] w-[92vw] sm:w-full max-w-[400px] sm:max-w-md md:max-w-lg lg:max-w-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-2 flex-shrink-0 mb-2">
               <Link
                 to={`/profile/${viewerShort.user_id}`}
-                className="font-medium text-white hover:underline"
+                className="font-medium text-white hover:underline truncate min-w-0"
                 onClick={() => setViewerShort(null)}
               >
                 {viewerShort.profiles?.full_name ?? 'Unknown'}
               </Link>
-              <button type="button" onClick={() => setViewerShort(null)} className="p-2 rounded text-white/80 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {viewerShort.user_id === user?.id && (
+                  <button
+                    type="button"
+                    onClick={() => deleteMyShort(viewerShort.id)}
+                    disabled={deletingShortId === viewerShort.id}
+                    className="p-2 rounded-full text-red-300 hover:text-red-400 hover:bg-red-500/20 disabled:opacity-50 transition"
+                    title="Delete this short"
+                    aria-label="Delete this short"
+                  >
+                    <Trash2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setViewerShort(null)}
+                  className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              </div>
             </div>
-            <p className="text-xs text-white/70 mb-2">{formatDistanceToNow(new Date(viewerShort.created_at), { addSuffix: true })}</p>
-            <div className="aspect-[9/16] max-h-[80vh] rounded-xl overflow-hidden bg-black">
-              <ReactPlayer
-                url={viewerShort.media_url}
-                width="100%"
-                height="100%"
-                controls
-                playing
-                config={{ file: { attributes: { style: { objectFit: 'contain' } } } }}
-              />
+            <p className="text-xs text-white/70 flex-shrink-0 mb-2">
+              {formatDistanceToNow(new Date(viewerShort.created_at), { addSuffix: true })}
+            </p>
+            <div className="flex-1 min-h-0 flex items-center justify-center">
+              <div className="w-full max-h-[60dvh] sm:max-h-[65dvh] md:max-h-[70dvh] aspect-[9/16] rounded-xl overflow-hidden bg-black shadow-2xl">
+                <ReactPlayer
+                  url={viewerShort.media_url}
+                  width="100%"
+                  height="100%"
+                  controls
+                  playing
+                  config={{ file: { attributes: { style: { objectFit: 'contain' } } } }}
+                />
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 mt-3">
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-3 flex-shrink-0 pb-1">
               {SHORT_REACTIONS.map(({ type, emoji, label }) => {
                 const counts = shortReactionCounts[viewerShort.id];
                 const count = counts?.[type] ?? 0;
@@ -685,12 +731,12 @@ export default function FeedPage() {
                     type="button"
                     onClick={() => toggleShortReaction(viewerShort.id, type)}
                     title={label}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition ${
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm transition touch-manipulation ${
                       isActive ? 'bg-toptier-primary/30 text-white ring-1 ring-toptier-primary' : 'bg-white/10 text-white/90 hover:bg-white/20'
                     }`}
                   >
                     <span>{emoji}</span>
-                    {count > 0 && <span className="text-xs">{count}</span>}
+                    {count > 0 && <span className="text-xs font-medium">{count}</span>}
                   </button>
                 );
               })}

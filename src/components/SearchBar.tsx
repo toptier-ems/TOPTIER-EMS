@@ -101,9 +101,9 @@ export default function SearchBar() {
   };
 
   return (
-    <div ref={boxRef} className="relative flex-1 max-w-xl mx-4">
+    <div ref={boxRef} className="relative flex-1 min-w-0 max-w-xl mx-1 sm:mx-2 md:mx-4">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 flex-shrink-0" />
         <input
           ref={inputRef}
           type="search"
@@ -112,7 +112,7 @@ export default function SearchBar() {
           onFocus={() => query.trim() && setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search people or posts..."
-          className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-500 text-sm focus:ring-2 focus:ring-toptier-primary/30 focus:border-toptier-primary focus:bg-white"
+          className="w-full pl-8 sm:pl-9 pr-3 sm:pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-500 text-sm focus:ring-2 focus:ring-toptier-primary/30 focus:border-toptier-primary focus:bg-white min-w-0"
         />
       </div>
       {open && (profiles.length > 0 || posts.length > 0) && (

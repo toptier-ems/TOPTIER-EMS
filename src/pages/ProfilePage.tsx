@@ -169,6 +169,7 @@ export default function ProfilePage() {
         is_current_role: form.is_current_role,
         start_date,
         end_date,
+        source_type: 'experience',
       });
       const { data } = await supabase
         .from('accomplishments')
@@ -256,12 +257,12 @@ export default function ProfilePage() {
           </div>
         </div>
         <div className="bg-toptier-surface rounded-xl border border-gray-200 p-6 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Accomplishments</h3>
-          {viewAccomplishments.length === 0 ? (
-            <p className="text-toptier-muted text-sm">No experience listed.</p>
+          <h3 className="font-semibold text-gray-900 mb-4">Seminars and trainings</h3>
+          {viewAccomplishments.filter((a) => a.source_type === 'pd').length === 0 ? (
+            <p className="text-toptier-muted text-sm">No seminars or trainings yet.</p>
           ) : (
             <ul className="space-y-3">
-              {viewAccomplishments.map((a) => (
+              {viewAccomplishments.filter((a) => a.source_type === 'pd').map((a) => (
                 <li key={a.id} className="p-3 rounded-lg bg-gray-100">
                   <p className="font-medium text-gray-900">{a.title}{a.company ? ` at ${a.company}` : ''}</p>
                   {a.employment_type && <p className="text-sm text-toptier-muted">{a.employment_type}</p>}
@@ -270,11 +271,31 @@ export default function ProfilePage() {
                     {formatExperienceDates(a)}
                     {a.location ? ` · ${a.location}` : ''}
                   </p>
-                  {a.source_type === 'pd' && viewCertByAccId[a.id] && (
+                  {viewCertByAccId[a.id] && (
                     <Link to={`/certificate/${viewCertByAccId[a.id]}`} className="inline-flex items-center gap-1 mt-2 text-sm text-toptier-primary hover:underline">
                       <Award className="w-4 h-4" /> View certificate
                     </Link>
                   )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="bg-toptier-surface rounded-xl border border-gray-200 p-6 mb-6">
+          <h3 className="font-semibold text-gray-900 mb-4">Experience / Role</h3>
+          {viewAccomplishments.filter((a) => a.source_type !== 'pd').length === 0 ? (
+            <p className="text-toptier-muted text-sm">No experience listed.</p>
+          ) : (
+            <ul className="space-y-3">
+              {viewAccomplishments.filter((a) => a.source_type !== 'pd').map((a) => (
+                <li key={a.id} className="p-3 rounded-lg bg-gray-100">
+                  <p className="font-medium text-gray-900">{a.title}{a.company ? ` at ${a.company}` : ''}</p>
+                  {a.employment_type && <p className="text-sm text-toptier-muted">{a.employment_type}</p>}
+                  {a.description && <p className="text-sm text-toptier-muted mt-0.5">{a.description}</p>}
+                  <p className="text-xs text-toptier-muted mt-1">
+                    {formatExperienceDates(a)}
+                    {a.location ? ` · ${a.location}` : ''}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -299,12 +320,12 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h1>
+    <div className="max-w-3xl mx-auto min-w-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">My Profile</h1>
 
-      <div className="bg-toptier-surface rounded-xl border border-gray-200 overflow-hidden mb-6">
+      <div className="bg-toptier-surface rounded-xl border border-gray-200 overflow-hidden mb-4 sm:mb-6">
         <div className="h-24 bg-gradient-to-r from-toptier-primary/25 via-toptier-pumpkin/20 to-toptier-amber/25" />
-        <div className="px-6 pb-6 -mt-12 relative">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 -mt-12 relative">
           <div className="w-24 h-24 rounded-full border-4 border-toptier-surface bg-gray-200 overflow-hidden flex items-center justify-center">
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -350,13 +371,41 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="bg-toptier-surface rounded-xl border border-gray-200 p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900">Accomplishments</h3>
+      <div className="bg-toptier-surface rounded-xl border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+        <h3 className="font-semibold text-gray-900 mb-4">Seminars and trainings</h3>
+        {loading ? (
+          <p className="text-toptier-muted">Loading...</p>
+        ) : accomplishments.filter((a) => a.source_type === 'pd').length === 0 ? (
+          <p className="text-toptier-muted text-sm">No seminars or trainings yet. Complete events from Professional Development to see them here.</p>
+        ) : (
+          <ul className="space-y-3">
+            {accomplishments.filter((a) => a.source_type === 'pd').map((a) => (
+              <li key={a.id} className="p-3 rounded-lg bg-gray-100">
+                <p className="font-medium text-gray-900">{a.title}{a.company ? ` at ${a.company}` : ''}</p>
+                {a.employment_type && <p className="text-sm text-toptier-muted">{a.employment_type}</p>}
+                {a.description && <p className="text-sm text-toptier-muted mt-0.5">{a.description}</p>}
+                <p className="text-xs text-toptier-muted mt-1">
+                  {formatExperienceDates(a)}
+                  {a.location ? ` · ${a.location}` : ''}
+                </p>
+                {certByAccId[a.id] && (
+                  <Link to={`/certificate/${certByAccId[a.id]}`} className="inline-flex items-center gap-1 mt-2 text-sm text-toptier-primary hover:underline">
+                    <Award className="w-4 h-4" /> View certificate
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="bg-toptier-surface rounded-xl border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <h3 className="font-semibold text-gray-900">Experience / Role</h3>
           <button
             type="button"
             onClick={() => setShowAddExperience(true)}
-            className="flex items-center gap-1 text-sm text-toptier-primary hover:underline"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-toptier-primary hover:bg-toptier-primary-hover text-white text-sm font-medium"
           >
             <Plus className="w-4 h-4" /> Add experience
           </button>
@@ -514,11 +563,11 @@ export default function ProfilePage() {
 
         {loading ? (
           <p className="text-toptier-muted">Loading...</p>
-        ) : accomplishments.length === 0 ? (
-          <p className="text-toptier-muted text-sm">No experience yet. Add one above.</p>
+        ) : accomplishments.filter((a) => a.source_type !== 'pd').length === 0 ? (
+          <p className="text-toptier-muted text-sm">No experience yet. Click &quot;Add experience&quot; above to add a role or job.</p>
         ) : (
           <ul className="space-y-3">
-            {accomplishments.map((a) => (
+            {accomplishments.filter((a) => a.source_type !== 'pd').map((a) => (
               <li key={a.id} className="flex justify-between items-start p-3 rounded-lg bg-gray-100">
                 <div>
                   <p className="font-medium text-gray-900">{a.title}{a.company ? ` at ${a.company}` : ''}</p>
@@ -528,27 +577,20 @@ export default function ProfilePage() {
                     {formatExperienceDates(a)}
                     {a.location ? ` · ${a.location}` : ''}
                   </p>
-                  {a.source_type === 'pd' && certByAccId[a.id] && (
-                    <Link to={`/certificate/${certByAccId[a.id]}`} className="inline-flex items-center gap-1 mt-2 text-sm text-toptier-primary hover:underline">
-                      <Award className="w-4 h-4" /> View certificate
-                    </Link>
-                  )}
                 </div>
-                {a.source_type !== 'pd' && (
-                  <button
-                    type="button"
-                    onClick={() => deleteAccomplishment(a.id)}
-                    className="p-1.5 rounded text-toptier-muted hover:text-red-400 hover:bg-red-500/10"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => deleteAccomplishment(a.id)}
+                  className="p-1.5 rounded text-toptier-muted hover:text-red-400 hover:bg-red-500/10"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </li>
             ))}
           </ul>
         )}
 
-        <div className="mt-6 pt-4 border-t border-gray-700">
+        <div className="mt-6 pt-4 border-t border-gray-200">
           <h3 className="font-semibold text-gray-900 mb-4">Skills</h3>
           <div className="flex flex-wrap gap-2 mb-3">
             {skills.map((s) => (
@@ -566,7 +608,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-gray-700">
+        <div className="mt-6 pt-4 border-t border-gray-200">
           <h3 className="font-semibold text-gray-900 mb-4">Interests</h3>
           <div className="flex flex-wrap gap-2 mb-3">
             {interests.map((i) => (
@@ -584,7 +626,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-gray-700">
+        <div className="mt-6 pt-4 border-t border-gray-200">
           <ProfilePDF profile={profile} accomplishments={accomplishments} />
         </div>
       </div>

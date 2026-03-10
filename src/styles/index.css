@@ -3,17 +3,37 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-gray-50 text-gray-900 antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
   #root {
     min-height: 100vh;
+    min-height: 100dvh;
   }
   input:focus, textarea:focus, button:focus-visible {
     @apply outline-none ring-2 ring-offset-2 ring-offset-white ring-[#FE5A1D]/40;
   }
   .btn-primary {
     @apply bg-[#FE5A1D] hover:bg-[#E54E0A] text-white font-medium transition;
+  }
+}
+
+@layer utilities {
+  /* Responsive modal container: full-width on mobile, max-height safe for all devices */
+  .modal-responsive {
+    @apply w-full max-h-[85vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden;
+  }
+  @media (min-width: 640px) {
+    .modal-responsive {
+      @apply max-w-lg rounded-xl;
+    }
+  }
+  /* Safe area for tables on small screens */
+  .table-wrap {
+    @apply -mx-2 sm:mx-0 overflow-x-auto overscroll-x-contain;
   }
 }

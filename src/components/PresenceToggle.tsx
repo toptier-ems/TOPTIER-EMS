@@ -126,8 +126,8 @@ export default function PresenceToggle() {
       </div>
 
       {showRestModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowRestModal(false)}>
-          <div className="bg-white rounded-xl shadow-modal border border-gray-200 max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={() => setShowRestModal(false)}>
+          <div className="bg-white w-full sm:max-w-md max-h-[85dvh] sm:max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200 p-4 sm:p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Rest days</h3>
               <button type="button" onClick={() => setShowRestModal(false)} className="p-1 rounded text-gray-500 hover:text-gray-900">
@@ -162,8 +162,8 @@ export default function PresenceToggle() {
       )}
 
       {showLeaveModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowLeaveModal(false)}>
-          <div className="bg-white rounded-xl shadow-modal border border-gray-200 max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={() => setShowLeaveModal(false)}>
+          <div className="bg-white w-full sm:max-w-md max-h-[85dvh] sm:max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200 p-4 sm:p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">On leave (advance)</h3>
               <button type="button" onClick={() => setShowLeaveModal(false)} className="p-1 rounded text-gray-500 hover:text-gray-900">

@@ -14,7 +14,7 @@ import { useDropzone } from 'react-dropzone';
 const RESUMES_BUCKET = 'resumes';
 const ALLOWED_ROLES = ['ceo', 'executive', 'manager', 'trainer', 'supervisor', 'hr'];
 
-const STATUS_OPTIONS: ApplicantStatus[] = ['initial_interview', 'training', 'final_interview'];
+const STATUS_OPTIONS: ApplicantStatus[] = ['initial_interview', 'training', 'final_interview', 'failed', 'hired'];
 
 export default function RecruitmentPage() {
   const { user, profile } = useAuth();
@@ -131,9 +131,9 @@ export default function RecruitmentPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Recruitment / Hiring</h1>
-      <p className="text-gray-600 mb-6">Manage applicants and their status in the hiring pipeline.</p>
+    <div className="min-w-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-6">Recruitment / Hiring</h1>
+      <p className="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">Manage applicants and their status in the hiring pipeline.</p>
 
       <div className="mb-4 flex justify-end">
         <button
@@ -146,9 +146,9 @@ export default function RecruitmentPage() {
       </div>
 
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => !saving && setShowForm(false)}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={() => !saving && setShowForm(false)}>
           <div
-            className="bg-white rounded-xl shadow-modal border border-gray-200 max-w-lg w-full max-h-[90vh] overflow-y-auto p-6"
+            className="bg-white w-full sm:max-w-lg max-h-[85dvh] sm:max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200 p-4 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
@@ -249,11 +249,11 @@ export default function RecruitmentPage() {
         ) : applicants.length === 0 ? (
           <div className="p-8 text-center text-gray-500">No applicants yet. Add one to get started.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="w-full text-left min-w-[720px]">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="py-3 px-4 font-semibold text-gray-900">Name</th>
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-900 text-sm">Name</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Position Applied For</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Age</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Experience</th>

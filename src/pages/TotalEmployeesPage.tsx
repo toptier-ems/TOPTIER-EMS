@@ -123,62 +123,62 @@ export default function TotalEmployeesPage() {
   const restDayCount = employees.filter((e) => getEffectiveStatus(e, restDayUserIds, onLeaveUserIds) === 'rest_day').length;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Total Employees</h1>
+    <div className="min-w-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Total Employees</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-toptier-primary/10 text-toptier-primary">
-              <Users className="w-6 h-6" />
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-3 sm:p-5">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-toptier-primary/10 text-toptier-primary flex-shrink-0">
+              <Users className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Employees</p>
-              <p className="text-2xl font-bold text-gray-900">{totalCount}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-green-100 text-green-700">
-              <UserCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Present</p>
-              <p className="text-2xl font-bold text-gray-900">{presentCount}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Employees</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{totalCount}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-100 text-amber-700">
-              <UserX className="w-6 h-6" />
+        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-3 sm:p-5">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-green-100 text-green-700 flex-shrink-0">
+              <UserCheck className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Absent</p>
-              <p className="text-2xl font-bold text-gray-900">{absentCount}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-sky-100 text-sky-700">
-              <Plane className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">On Leave</p>
-              <p className="text-2xl font-bold text-gray-900">{onLeaveCount}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">Present</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{presentCount}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-violet-100 text-violet-700">
-              <Calendar className="w-6 h-6" />
+        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-3 sm:p-5">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-amber-100 text-amber-700 flex-shrink-0">
+              <UserX className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Rest Day</p>
-              <p className="text-2xl font-bold text-gray-900">{restDayCount}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">Absent</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{absentCount}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-3 sm:p-5">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-sky-100 text-sky-700 flex-shrink-0">
+              <Plane className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">On Leave</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{onLeaveCount}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-card p-3 sm:p-5">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-violet-100 text-violet-700 flex-shrink-0">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">Rest Day</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{restDayCount}</p>
             </div>
           </div>
         </div>
@@ -204,7 +204,7 @@ export default function TotalEmployeesPage() {
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-md">
+        <div className="relative flex-1 min-w-0 w-full sm:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="search"
@@ -224,12 +224,12 @@ export default function TotalEmployeesPage() {
             {search.trim() ? 'No employees match your search.' : 'No employees yet.'}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="w-full text-left min-w-[640px]">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="py-3 px-4 font-semibold text-gray-900">Name</th>
-                  <th className="py-3 px-4 font-semibold text-gray-900">Position</th>
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-900 text-sm">Name</th>
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-900 text-sm">Position</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Department</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Title</th>
                   <th className="py-3 px-4 font-semibold text-gray-900">Status</th>

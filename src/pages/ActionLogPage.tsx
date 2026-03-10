@@ -41,9 +41,9 @@ export default function ActionLogPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Action Log</h1>
-      <p className="text-gray-600 mb-6">Activities for Recruitment, Leave Requests, and Leave Allocation.</p>
+    <div className="min-w-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Action Log</h1>
+      <p className="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">Activities for Recruitment, Leave Requests, and Leave Allocation.</p>
 
       <div className="bg-white rounded-lg border border-gray-200 shadow-card overflow-hidden">
         {loading ? (
@@ -51,8 +51,8 @@ export default function ActionLogPage() {
         ) : logs.length === 0 ? (
           <div className="p-8 text-center text-gray-500">No actions logged yet.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="w-full text-left min-w-[500px]">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th className="py-3 px-4 font-semibold text-gray-900">Date</th>

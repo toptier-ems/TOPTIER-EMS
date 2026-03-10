@@ -109,7 +109,7 @@ export default function SettingsPage() {
   if (!profile) return null;
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto min-w-0 px-0 sm:px-0">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Settings</h1>
       <p className="text-toptier-muted mb-6">Edit your information. Your profile page shows the final output to others.</p>
 

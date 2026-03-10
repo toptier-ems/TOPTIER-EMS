@@ -629,15 +629,15 @@ export default function ClientsITDepartmentPage() {
         const client = clients.find((c) => c.id === editingClientId);
         if (!client) return null;
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setEditingClientId(null)}>
-            <div className="bg-white rounded-xl shadow-modal border border-gray-200 w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={() => setEditingClientId(null)}>
+            <div className="bg-white w-full sm:max-w-md max-h-[85dvh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-gray-200 flex-shrink-0">
                 <h2 className="text-lg font-semibold text-gray-900">Edit client — {client.name}</h2>
                 <button type="button" onClick={() => setEditingClientId(null)} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100">
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <form onSubmit={saveEditClient} className="p-5 space-y-4 overflow-auto">
+              <form onSubmit={saveEditClient} className="p-4 sm:p-5 space-y-4 overflow-auto min-h-0">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contract (PDF or .docx)</label>
                   {client.contract_url ? (
@@ -849,8 +849,8 @@ export default function ClientsITDepartmentPage() {
       )}
 
       {showAddClientModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowAddClientModal(false)}>
-          <div className="bg-white rounded-xl shadow-modal border border-gray-200 w-full max-w-sm p-5" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={() => setShowAddClientModal(false)}>
+          <div className="bg-white w-full sm:max-w-sm max-h-[85dvh] overflow-y-auto rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200 p-4 sm:p-5" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Client</h3>
             <form onSubmit={addClient} className="space-y-3">
               <input
@@ -942,19 +942,19 @@ function CreateTaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={onClose}>
       <div
-        className="bg-white rounded-xl shadow-modal border border-gray-200 w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-white w-full sm:max-w-lg max-h-[85dvh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-gray-200 flex-shrink-0">
           <h2 className="text-lg font-semibold text-gray-900">Create Task</h2>
           <button type="button" onClick={onClose} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100">
             <X className="w-5 h-5" />
           </button>
         </div>
         <form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0 overflow-auto">
-          <div className="p-5 space-y-4">
+          <div className="p-4 sm:p-5 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Task name</label>
               <input
@@ -1221,8 +1221,8 @@ function TaskDetailPanel({
 
   if (!task) {
     return (
-      <div className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-modal border-l border-gray-200 z-40 flex items-center justify-center">
-        <button type="button" onClick={onClose} className="absolute top-4 right-4 p-2 rounded-lg text-gray-500 hover:bg-gray-100">
+      <div className="fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto w-full sm:max-w-xl bg-white shadow-modal border-l border-gray-200 z-40 flex flex-col">
+        <button type="button" onClick={onClose} className="absolute top-4 right-4 p-2 rounded-lg text-gray-500 hover:bg-gray-100 z-10">
           <X className="w-5 h-5" />
         </button>
         <p className="text-gray-500">Task not found.</p>
@@ -1233,8 +1233,8 @@ function TaskDetailPanel({
   const openSubtasks = subtasks.filter((s) => s.status === 'open').length;
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-modal border-l border-gray-200 z-40 flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
+    <div className="fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto w-full sm:max-w-xl bg-white shadow-modal border-l border-gray-200 z-40 flex flex-col overflow-hidden">
+      <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-gray-200 flex-shrink-0">
         <h2 className="text-lg font-semibold text-gray-900 truncate pr-8">{task.title}</h2>
         <div className="flex items-center gap-1 absolute top-4 right-4">
           <button

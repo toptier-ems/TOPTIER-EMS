@@ -272,8 +272,8 @@ export default function LeavePage() {
 
       {/* No credit info modal */}
       {showNoCreditModal && noCreditType && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowNoCreditModal(false)}>
-          <div className="bg-white rounded-xl shadow-modal border border-gray-200 max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50" onClick={() => setShowNoCreditModal(false)}>
+          <div className="bg-white w-full sm:max-w-md max-h-[85dvh] sm:max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-xl shadow-modal border border-gray-200 p-4 sm:p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-lg bg-amber-100">

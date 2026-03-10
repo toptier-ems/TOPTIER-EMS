@@ -44,7 +44,7 @@ export default function UserMenu() {
         </div>
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-72 rounded-xl bg-white border border-gray-200 shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl bg-white border border-gray-200 shadow-xl z-50 overflow-hidden">
           <div className="p-4 border-b border-gray-200 flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
               {profile?.avatar_url ? (

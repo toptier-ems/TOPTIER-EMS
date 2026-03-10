@@ -173,6 +173,10 @@ export interface PdEvent {
   duration: string | null;
   category: PdEventCategory;
   scheduled_at: string | null;
+  location: string | null;
+  min_participants: number | null;
+  max_participants: number | null;
+  banner_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -294,7 +298,7 @@ export const LEAVE_TYPE_LABELS: Record<LeaveType, string> = {
   sick: 'Sick Leave',
 };
 
-export type ApplicantStatus = 'initial_interview' | 'training' | 'final_interview';
+export type ApplicantStatus = 'initial_interview' | 'training' | 'final_interview' | 'failed' | 'hired';
 
 export interface Applicant {
   id: string;
@@ -313,6 +317,8 @@ export const APPLICANT_STATUS_LABELS: Record<ApplicantStatus, string> = {
   initial_interview: 'Initial Interview',
   training: 'Training',
   final_interview: 'Final Interview',
+  failed: 'Failed',
+  hired: 'Hired',
 };
 
 // ——— Clients IT Department (task management, visible only to IT department) ———

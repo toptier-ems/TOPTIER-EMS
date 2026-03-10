@@ -76,8 +76,8 @@ export default function LeaveRequestsPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leave Requests</h1>
+    <div className="min-w-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Leave Requests</h1>
       {loading ? (
         <p className="text-gray-600">Loading...</p>
       ) : requests.length === 0 ? (

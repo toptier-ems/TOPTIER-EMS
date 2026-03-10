@@ -31,9 +31,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left: Form */}
-      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24 bg-gradient-to-b from-[#FFF8F5] to-[#FFEFE6]">
-        <div className="w-full max-w-[400px] mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome to Toptier Employee Management System</h1>
+      <div className="flex-1 flex flex-col justify-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 bg-gradient-to-b from-[#FFF8F5] to-[#FFEFE6]">
+        <div className="w-full max-w-[400px] mx-auto min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Welcome to Toptier Employee Management System</h1>
           <p className="text-gray-600 text-sm mb-8">
             Don&apos;t have an account?{' '}
             <Link to="/register" className="text-toptier-primary hover:underline font-medium">Sign up</Link>
